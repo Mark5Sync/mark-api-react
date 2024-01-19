@@ -1,14 +1,13 @@
 
-import useQuery from "../hooks/useQuery";
-import useQuerySync from "../hooks/useQuerySync";
+
+import { useQuery, useQuerySync } from "../hooks/useQuery";
     
     
  /* types */
 interface Httplocalhost5173api {
   TodoInput: TodoInput;
   TodoOutput: TodoOutput;
-  CreateTodoInput: CreateTodoInput;
-  CreateTodoOutput: TodoOutput;
+  TodosInput: TodosInput;
   TodosOutput: TodoOutput[];
   HomeInput: HomeInput;
   HomeOutput: string;
@@ -18,8 +17,8 @@ interface HomeInput {
   name: string;
 }
 
-interface CreateTodoInput {
-  title: string;
+interface TodosInput {
+  limit: string;
 }
 
 interface TodoOutput {
@@ -66,20 +65,10 @@ export const useTodoQuerySync = () => useQuerySync<TodoInput,TodoOutput>(
 
 
 
-export const useCreateTodoQuery = (input: CreateTodoInput) => useQuery<CreateTodoInput,TodoOutput>( 
-    'http://localhost:5173/api/createTodo', input 
+export const useTodosQuery = (input: TodosInput) => useQuery<TodosInput,TodoOutput[]>( 
+    'http://localhost:5173/api/todos', input 
 )
-export const useCreateTodoQuerySync = () => useQuerySync<CreateTodoInput,TodoOutput>( 
-    'http://localhost:5173/api/createTodo'
-)
-            
-
-
-
-export const useTodosQuery = () => useQuery<null,TodoOutput[]>( 
-    'http://localhost:5173/api/todos',  
-)
-export const useTodosQuerySync = () => useQuerySync<null,TodoOutput[]>( 
+export const useTodosQuerySync = () => useQuerySync<TodosInput,TodoOutput[]>( 
     'http://localhost:5173/api/todos'
 )
             

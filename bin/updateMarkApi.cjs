@@ -40,8 +40,8 @@ const loadDic = async (url) => {
     // console.log({ RootTypes })
 
     let content = `
-import useQuery from "../hooks/useQuery";
-import useQuerySync from "../hooks/useQuerySync";
+
+import { useQuery, useQuerySync } from "../hooks/useQuery";
     
     ` + '\n'
 
@@ -51,10 +51,10 @@ import useQuerySync from "../hooks/useQuerySync";
     content += Object.keys(data.methods).map(methodName => {
         const Method = capitalizeFirstLetter(methodName)
 
-        const inputType  = 'input' in data.methods[methodName]   ? RootTypes[Method + 'Input'] : 'null'
-        const outputType = 'output' in data.methods[methodName] ? RootTypes[Method + 'Output'] : 'null'
+        const inputType  = 'input' in data.methods[methodName]   ? RootTypes[Method + 'Input'] : 'undefined'
+        const outputType = 'output' in data.methods[methodName] ? RootTypes[Method + 'Output'] : 'undefined'
 
-        const useInputVal = inputType != 'null'
+        const useInputVal = inputType != 'undefined'
         const inputVal = useInputVal ? `input: ${inputType}` : ''
 
         return `

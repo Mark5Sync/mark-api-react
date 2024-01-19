@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import { useCreateTodoQuerySync, useTodosQuery } from './test/ApiQueryes'
+import { useTodoQuerySync, useTodosQuery } from './test/ApiQueryes'
 
 function App() {
-  const [todos, setTodos] = useTodosQuery()
-  const [createToto, createProps] = useCreateTodoQuerySync()
+  const [todos, setTodos] = useTodosQuery({ limit: '1' })
+  const [createToto, createProps] = useTodoQuerySync()
 
 
   useEffect(() => {
@@ -24,27 +24,27 @@ function App() {
 
 
   const onCreate = async () => {
-    const created = await createToto({ title: '111' })
-    console.log({ created })
+    const created = await createToto({ id: (todos ? todos.length + 1 : 1) + '' })
+    if (created)
+      setTodos(prev => prev ? [...prev, created] : [created])
   }
 
 
   return (
-    <>
+    <span style={{ textAlign: 'center' }}>
       {
 
         todos && todos.map(todo => {
           return <div key={todo.id}>
-            {todo.website}
+            {todo.email}
           </div>
         })
 
       }
 
       <button onClick={onRemoveFirts}>remove</button>
-      <button onClick={onCreate}>{createProps.loading ? 'load': 'create'}</button>
-
-    </>
+      <button onClick={onCreate}>{createProps.loading ? 'load' : 'create'}</button>
+    </span>
   )
 }
 

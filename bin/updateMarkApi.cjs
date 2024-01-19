@@ -41,7 +41,7 @@ const loadDic = async (url) => {
 
     let content = `
 import useQuery from "../hooks/useQuery";
-    
+import useQuerySync from "../hooks/useQuerySync";
     
     ` + '\n'
 
@@ -60,6 +60,9 @@ import useQuery from "../hooks/useQuery";
         return `
 export const use${Method}Query = (${inputVal}) => useQuery<${inputType},${outputType}>( 
     '${url}/${methodName}', ${useInputVal ? 'input' : ''} 
+)
+export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputType}>( 
+    '${url}/${methodName}'
 )
             
 `

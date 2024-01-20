@@ -1,84 +1,28 @@
 
 
-import { useQuery, useQuerySync } from "../hooks/useQuery";
+import { useQuery, useQuerySync } from "mark-api-react";
     
     
  /* types */
-interface Httplocalhost5173api {
-  TodoInput: TodoInput;
-  TodoOutput: TodoOutput;
-  TodosInput: TodosInput;
-  TodosOutput: TodoOutput[];
-  HomeInput: HomeInput;
-  HomeOutput: string;
-}
-
-interface HomeInput {
-  name: string;
-}
-
-interface TodosInput {
-  limit: string;
-}
-
-interface TodoOutput {
+interface PostsOutput {
   id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: Address;
-  phone: string;
-  website: string;
-  company: Company;
-}
-
-interface Company {
-  name: string;
-  catchPhrase: string;
-  bs: string;
-}
-
-interface Address {
-  street: string;
-  suite: string;
-  city: string;
-  zipcode: string;
-  geo: Geo;
-}
-
-interface Geo {
-  lat: string;
-  lng: string;
-}
-
-interface TodoInput {
-  id: string;
+  slug: string;
+  url: string;
+  title: string;
+  content: string;
+  image: string;
+  thumbnail: string;
+  status: string;
+  category: string;
+  publishedAt: string;
+  updatedAt: string;
+  userId: number;
 }
  /* hooks */
-export const useTodoQuery = (input: TodoInput) => useQuery<TodoInput,TodoOutput>( 
-    'http://localhost:5173/api/todo', input 
+export const usePostsQuery = () => useQuery<undefined,PostsOutput[]>( 
+    'http://localhost/api/posts',  
 )
-export const useTodoQuerySync = () => useQuerySync<TodoInput,TodoOutput>( 
-    'http://localhost:5173/api/todo'
-)
-            
-
-
-
-export const useTodosQuery = (input: TodosInput) => useQuery<TodosInput,TodoOutput[]>( 
-    'http://localhost:5173/api/todos', input 
-)
-export const useTodosQuerySync = () => useQuerySync<TodosInput,TodoOutput[]>( 
-    'http://localhost:5173/api/todos'
-)
-            
-
-
-
-export const useHomeQuery = (input: HomeInput) => useQuery<HomeInput,string>( 
-    'http://localhost:5173/api/home', input 
-)
-export const useHomeQuerySync = () => useQuerySync<HomeInput,string>( 
-    'http://localhost:5173/api/home'
+export const usePostsQuerySync = () => useQuerySync<undefined,PostsOutput[]>( 
+    'http://localhost/api/posts'
 )
             

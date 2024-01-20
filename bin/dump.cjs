@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const JsonToTS = require('json-to-ts')
+require('dotenv').config()
 
 const capitalizeFirstLetter = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
@@ -41,12 +42,12 @@ const loadDic = async (url) => {
 
     let content = `
 
-import { useQuery, useQuerySync } from "../hooks/useQuery";
+import { useQuery, useQuerySync } from "mark-api-react";
     
     ` + '\n'
 
     content += ' /* types */' + '\n'
-    content += tsTypes.join('\n\n') + '\n'
+    content += tsTypes.slice(1).join('\n\n') + '\n'
     content += ' /* hooks */'
     content += Object.keys(data.methods).map(methodName => {
         const Method = capitalizeFirstLetter(methodName)
@@ -78,20 +79,23 @@ export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputTyp
 
 
 
-const filePath = path.resolve('./mark-api.json');
+// const filePath = path.resolve('./mark-api.json');
 try {
-    const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    // const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-    loadDic(config.url).then(data => {
+    const url = process.env.MARK_API_URL
+    const file = process.env.MARK_API_FILE
+
+    loadDic(url).then(data => {
         if (!data)
             return 'exit'
 
-        const directoryPath = path.dirname(config.out);
+        const directoryPath = path.dirname(file);
         fs.mkdirSync(directoryPath, { recursive: true });
 
-        fs.writeFileSync(config.out, data, 'utf8');
+        fs.writeFileSync(file, data, 'utf8');
 
-        console.log('create file', config.out)
+        console.log('create file', file)
     })
 
 } catch (error) {

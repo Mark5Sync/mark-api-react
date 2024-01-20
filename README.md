@@ -1,15 +1,14 @@
 mark-api-react
 
 
-```json
-//mark-api.json
-{
-    "url": "http://localhost:5173/api",
-    "out": "./src/test/ApiQueryes.ts"
-}
+
+```
+// .env
+MARK_API_URL: http://localhost/api
+MARK_API_FILE: ./src/test/ApiQueryes.ts
 ```
 
 
 ```
-npm run dump-mark-api
+npx mark-api-dump
 ```

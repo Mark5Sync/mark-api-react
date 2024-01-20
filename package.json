@@ -3,12 +3,20 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build --lib",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "dump": "node ./bin/dump.cjs"
+    "dump": "node ./bin/dump.cjs",
+    "build-lib": "npx tsc -p ts-lib.config.json"
   },
   "dependencies": {
     "json-to-ts": "^1.7.0",

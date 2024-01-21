@@ -23,9 +23,7 @@ const matchRootTypes = (types) => {
 const __type__Handler = (interfc) => {
     if (interfc.includes("__TYPE__")) {
         const regex = /interface (\w*).*:(.*)\[\]/s;
-        console.log({interfc})
         const [_, name, value] = interfc.match(regex);
-
 
         return `type ${name} = ${value}`
     }

@@ -20,6 +20,19 @@ const matchRootTypes = (types) => {
     return result
 }
 
+const __type__Handler = (interfc) => {
+    if (interfc.includes("__TYPE__")) {
+        const regex = /interface (\w*).*:(.*)\[\]/s;
+        console.log({interfc})
+        const [_, name, value] = interfc.match(regex);
+
+
+        return `type ${name} = ${value}`
+    }
+
+    return interfc
+}
+
 const loadDic = async (url) => {
     const serverUrl = `${url}/__doc__`
     const serverDoc = await fetch(serverUrl).then(a => a.json())
@@ -47,12 +60,12 @@ import { useQuery, useQuerySync } from "mark-api-react";
     ` + '\n'
 
     content += ' /* types */' + '\n'
-    content += tsTypes.slice(1).join('\n\n') + '\n'
+    content += tsTypes.slice(1).map(interfc => __type__Handler(interfc)).join('\n\n') + '\n'
     content += ' /* hooks */'
     content += Object.keys(data.methods).map(methodName => {
         const Method = capitalizeFirstLetter(methodName)
 
-        const inputType  = 'input' in data.methods[methodName]   ? RootTypes[Method + 'Input'] : 'undefined'
+        const inputType = 'input' in data.methods[methodName] ? RootTypes[Method + 'Input'] : 'undefined'
         const outputType = 'output' in data.methods[methodName] ? RootTypes[Method + 'Output'] : 'undefined'
 
         const useInputVal = inputType != 'undefined'

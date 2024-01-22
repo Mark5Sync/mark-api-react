@@ -21,7 +21,9 @@ const matchRootTypes = (types) => {
 }
 
 const __type__Handler = (interfc) => {
-    if (interfc.includes("__TYPE__")) {
+    console.log({interfc})
+
+    if (interfc && interfc.includes("__TYPE__")) {
         const regex = /interface (\w*).*:(.*)\[\]/s;
         const [_, name, value] = interfc.match(regex);
 
@@ -58,7 +60,7 @@ import { useQuery, useQuerySync } from "mark-api-react";
     ` + '\n'
 
     content += ' /* types */' + '\n'
-    content += tsTypes.slice(1).map(interfc => __type__Handler(interfc)).join('\n\n') + '\n'
+    content += tsTypes.slice(1).map(interfc => __type__Handler(interfc)).map(interfc => `export ${interfc}`).join('\n\n') + '\n'
     content += ' /* hooks */'
     content += Object.keys(data.methods).map(methodName => {
         const Method = capitalizeFirstLetter(methodName)

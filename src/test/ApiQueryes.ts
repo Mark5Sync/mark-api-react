@@ -4,21 +4,25 @@ import { useQuery, useQuerySync } from "mark-api-react";
     
     
  /* types */
-type HomeOutput =  (string[] | HomeTYPE2 | string)
+export type HomeOutput =  (HomeTYPE | null | string)
 
-interface HomeTYPE2 {
+export interface HomeTYPE {
   message: string;
 }
 
-interface HomeInput {
-  name: string;
+export interface HomeInput {
+  name: Name;
 }
 
-interface TodosInput {
-  limit: string;
+export type Name =  (null | string)
+
+export interface TodosInput {
+  limit: number;
 }
 
-interface TodoOutput {
+export type TodoOutput =  (TodoTYPE | null)
+
+export interface TodoTYPE {
   id: number;
   name: string;
   username: string;
@@ -29,13 +33,13 @@ interface TodoOutput {
   company: Company;
 }
 
-interface Company {
+export interface Company {
   name: string;
   catchPhrase: string;
   bs: string;
 }
 
-interface Address {
+export interface Address {
   street: string;
   suite: string;
   city: string;
@@ -43,13 +47,13 @@ interface Address {
   geo: Geo;
 }
 
-interface Geo {
+export interface Geo {
   lat: string;
   lng: string;
 }
 
-interface TodoInput {
-  id: string;
+export interface TodoInput {
+  id: number;
 }
  /* hooks */
 export const useTodoQuery = (input: TodoInput) => useQuery<TodoInput,TodoOutput>( 
@@ -62,10 +66,10 @@ export const useTodoQuerySync = () => useQuerySync<TodoInput,TodoOutput>(
 
 
 
-export const useTodosQuery = (input: TodosInput) => useQuery<TodosInput,TodoOutput[]>( 
+export const useTodosQuery = (input: TodosInput) => useQuery<TodosInput,TodoTYPE[]>( 
     'http://localhost:8800/api/todos', input 
 )
-export const useTodosQuerySync = () => useQuerySync<TodosInput,TodoOutput[]>( 
+export const useTodosQuerySync = () => useQuerySync<TodosInput,TodoTYPE[]>( 
     'http://localhost:8800/api/todos'
 )
             

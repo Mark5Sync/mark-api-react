@@ -7,9 +7,14 @@ interface Error {
     code: string,
 }
 
+interface ApiResult<T> {
+    data: T,
+    error?: Error,
+    redirect?: string,
+}
 
-const api = async <I, T>(url: string, input?: I) => {
-    console.log('fetch', url)
+const api = async <I, T>(url: string, input?: I, extra?: (data: ApiResult<T>) => void) => {
+    // console.log('fetch', url)
 
     return fetch(url, {
         body: JSON.stringify(input),
@@ -20,6 +25,7 @@ const api = async <I, T>(url: string, input?: I) => {
     })
         .then(a => a.json())
         .then(result => {
+            if (extra) extra(result)
             if ('data' in result)
                 return result.data as T
         })
@@ -27,14 +33,22 @@ const api = async <I, T>(url: string, input?: I) => {
 
 
 
-const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>, { loading: boolean, refetch: () => void, error?: Error }] => {
+const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>, { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
     const [data, setData] = useState<T | undefined>()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>()
+    const [redirect, setRedirect] = useState<string | undefined>(undefined)
 
     const refetch = () => {
 
-        api<I, T>(url, input)
+        api<I, T>(url, input, (result: ApiResult<T>) => {
+                if (result?.redirect)
+                    setRedirect(result.redirect)
+
+                if (result?.error)
+                    setError(result.error)
+
+            })
             .then(result => {
                 setData(result)
             })
@@ -51,30 +65,39 @@ const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<
 
     useEffect(refetch, [])
 
-    return [data, setData, { loading, error, refetch }]
+    return [data, setData, { loading, error, refetch, redirect }]
 }
 
 
 
-const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>, { loading: boolean, error?: Error }] => {
+const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>, { loading: boolean, error?: Error, redirect?: string }] => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | undefined>()
+    const [redirect, setRedirect] = useState<string | undefined>(undefined)
+
 
 
 
     const refetch = async (input?: I): Promise<T | undefined> => {
         setLoading(true)
 
-        const result = await api<I, T>(url, input).catch(error => {
+        const data = await api<I, T>(url, input, (result: ApiResult<T>) => {
+            if (result?.redirect)
+                setRedirect(result.redirect)
+
+            if (result?.error)
+                setError(result.error)
+
+        }).catch(error => {
             setError(error)
         })
 
         setLoading(false)
-        if (result)
-            return result as T
+        if (data)
+            return data as T
     }
 
-    return [refetch, { loading, error }]
+    return [refetch, { loading, error, redirect }]
 }
 
 

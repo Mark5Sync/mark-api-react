@@ -7,9 +7,11 @@ declare const useQuery: <I, T>(url: string, input?: I) => [T, import("react").Di
     loading: boolean;
     refetch: () => void;
     error?: Error;
+    redirect?: string;
 }];
-declare const useQuerySync: <I, T>(url: string) => [(input: I) => Promise<T>, {
+declare const useQuerySync: <I, T>(url: string) => [(input?: I) => Promise<T>, {
     loading: boolean;
     error?: Error;
+    redirect?: string;
 }];
 export { useQuery, useQuerySync };

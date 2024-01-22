@@ -94,7 +94,7 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>
 
         setLoading(false)
         if (data)
-            return data as T
+            return data
     }
 
     return [refetch, { loading, error, redirect }]

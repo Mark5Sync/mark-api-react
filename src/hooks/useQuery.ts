@@ -56,7 +56,7 @@ const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<
 
 
 
-const useQuerySync = <I, T>(url: string): [(input: I) => Promise<T | undefined>, { loading: boolean, error?: Error }] => {
+const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>, { loading: boolean, error?: Error }] => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | undefined>()
 

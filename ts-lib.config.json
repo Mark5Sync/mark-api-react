@@ -5,7 +5,11 @@
     "outDir": "./lib",
     "moduleResolution": "node",
     "declaration": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+
+    "sourceMap": true,
+    "inlineSources": true,
+    "mapRoot": "maps"
   },
   "include": [
     "index.ts"

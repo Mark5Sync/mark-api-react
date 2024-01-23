@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { useTodoQuerySync, useTodosQuery } from './test/ApiQueryes'
 
 function App() {
-  const [todos, setTodos] = useTodosQuery({ limit: '1' })
-  const [createToto, createProps] = useTodoQuerySync()
+  const [todos, setTodos, { redirect: rMain }] = useTodosQuery({ limit: '1' })
+  const [createToto, { redirect, loading }] = useTodoQuerySync()
 
 
   useEffect(() => {
@@ -30,6 +30,13 @@ function App() {
   }
 
 
+  useEffect(() => {
+    if (redirect)
+      alert('redirect: ' + redirect)
+    if (rMain)
+      alert('redirect: ' + rMain)
+  }, [redirect, rMain])
+
   return (
     <span style={{ textAlign: 'center' }}>
       {
@@ -43,7 +50,7 @@ function App() {
       }
 
       <button onClick={onRemoveFirts}>remove</button>
-      <button onClick={onCreate}>{createProps.loading ? 'load' : 'create'}</button>
+      <button onClick={onCreate}>{loading ? 'load' : 'create'}</button>
     </span>
   )
 }

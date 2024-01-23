@@ -54,7 +54,7 @@ const loadDic = async (url) => {
     // console.log({ RootTypes })
 
     let content = `
-
+// import { useQuery, useQuerySync } from "../hooks/useQuery.ts"
 import { useQuery, useQuerySync } from "mark-api-react";
     
     ` + '\n'

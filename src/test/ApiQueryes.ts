@@ -1,6 +1,6 @@
 
-
-import { useQuery, useQuerySync } from "mark-api-react";
+import { useQuery, useQuerySync } from "../hooks/useQuery.ts"
+// import { useQuery, useQuerySync } from "mark-api-react";
     
     
  /* types */
@@ -57,29 +57,29 @@ export interface TodoInput {
 }
  /* hooks */
 export const useTodoQuery = (input: TodoInput) => useQuery<TodoInput,TodoOutput>( 
-    'http://localhost:8800/api/todo', input 
+    'http://localhost:5174/api/todo', input 
 )
 export const useTodoQuerySync = () => useQuerySync<TodoInput,TodoOutput>( 
-    'http://localhost:8800/api/todo'
+    'http://localhost:5174/api/todo'
 )
             
 
 
 
 export const useTodosQuery = (input: TodosInput) => useQuery<TodosInput,TodoTYPE[]>( 
-    'http://localhost:8800/api/todos', input 
+    'http://localhost:5174/api/todos', input 
 )
 export const useTodosQuerySync = () => useQuerySync<TodosInput,TodoTYPE[]>( 
-    'http://localhost:8800/api/todos'
+    'http://localhost:5174/api/todos'
 )
             
 
 
 
 export const useHomeQuery = (input: HomeInput) => useQuery<HomeInput,HomeOutput>( 
-    'http://localhost:8800/api/home', input 
+    'http://localhost:5174/api/home', input 
 )
 export const useHomeQuerySync = () => useQuerySync<HomeInput,HomeOutput>( 
-    'http://localhost:8800/api/home'
+    'http://localhost:5174/api/home'
 )
             

@@ -32,9 +32,9 @@ function App() {
 
   useEffect(() => {
     if (redirect)
-      alert('redirect: ' + redirect)
+      console.log('redirect: ' + redirect)
     if (rMain)
-      alert('redirect: ' + rMain)
+      console.log('redirect: ' + rMain)
   }, [redirect, rMain])
 
   return (

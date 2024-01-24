@@ -33,7 +33,7 @@ const __type__Handler = (interfc) => {
     return interfc
 }
 
-const loadDic = async (url) => {
+const loadDic = async (url, dev) => {
     const serverUrl = `${url}/__doc__`
     const serverDoc = await fetch(serverUrl).then(a => a.json())
 
@@ -54,8 +54,12 @@ const loadDic = async (url) => {
     // console.log({ RootTypes })
 
     let content = `
-// import { useQuery, useQuerySync } from "../hooks/useQuery.ts"
-import { useQuery, useQuerySync } from "mark-api-react";
+
+${
+    dev
+        ?'import { useQuery, useQuerySync } from "../hooks/useQuery.ts"'
+        :'import { useQuery, useQuerySync } from "mark-api-react"'
+}
     
     ` + '\n'
 
@@ -96,10 +100,13 @@ export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputTyp
 try {
     // const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-    const url = process.env.MARK_API_URL
+    const url  = process.env.MARK_API_URL
     const file = process.env.MARK_API_FILE
+    const dev  = process.env.MARK_API_DEV
 
-    loadDic(url).then(data => {
+    console.log({url, dev})
+
+    loadDic(url, dev).then(data => {
         if (!data)
             return 'exit'
 

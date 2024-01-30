@@ -39,6 +39,7 @@ const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<
 
     const refetch = () => {
         setLoading(true)
+        setError(undefined)
 
         api<I, T>(url, input, (result: ApiResult<T>) => {
                 setRedirect(result?.redirect)
@@ -76,6 +77,7 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>
 
     const refetch = async (input?: I): Promise<T | undefined> => {
         setLoading(true)
+        setError(undefined)
 
         const data = await api<I, T>(url, input, (result: ApiResult<T>) => {
             setRedirect(result?.redirect)

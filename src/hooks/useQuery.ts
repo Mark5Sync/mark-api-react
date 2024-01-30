@@ -14,8 +14,6 @@ interface ApiResult<T> {
 }
 
 const api = async <I, T>(url: string, input?: I, extra?: (data: ApiResult<T>) => void) => {
-    // console.log('fetch', url)
-
     return fetch(url, {
         body: JSON.stringify(input),
         method: 'POST',
@@ -40,13 +38,11 @@ const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<
     const [redirect, setRedirect] = useState<string | undefined>(undefined)
 
     const refetch = () => {
+        setLoading(true)
 
         api<I, T>(url, input, (result: ApiResult<T>) => {
-                if (result?.redirect)
-                    setRedirect(result.redirect)
-
-                if (result?.error)
-                    setError(result.error)
+                setRedirect(result?.redirect)
+                setError(result?.error)
 
             })
             .then(result => {
@@ -82,11 +78,8 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>
         setLoading(true)
 
         const data = await api<I, T>(url, input, (result: ApiResult<T>) => {
-            if (result?.redirect)
-                setRedirect(result.redirect)
-
-            if (result?.error)
-                setError(result.error)
+            setRedirect(result?.redirect)
+            setError(result?.error)
 
         }).catch(error => {
             setError(error)

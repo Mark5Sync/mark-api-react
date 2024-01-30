@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react"
 
 
-
 interface Error {
     message: string,
     code: string,
 }
+
 
 interface ApiResult<T> {
     data: T,
     error?: Error,
     redirect?: string,
 }
+
 
 const api = async <I, T>(url: string, input?: I, extra?: (data: ApiResult<T>) => void) => {
     return fetch(url, {
@@ -36,6 +37,7 @@ const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>()
     const [redirect, setRedirect] = useState<string | undefined>(undefined)
+
 
     const refetch = () => {
         setLoading(true)
@@ -62,6 +64,7 @@ const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<
 
     useEffect(refetch, [])
 
+
     return [data, setData, { loading, error, refetch, redirect }]
 }
 
@@ -71,8 +74,6 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | undefined>()
     const [redirect, setRedirect] = useState<string | undefined>(undefined)
-
-
 
 
     const refetch = async (input?: I): Promise<T | undefined> => {
@@ -91,6 +92,7 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>
         if (data)
             return data
     }
+
 
     return [refetch, { loading, error, redirect }]
 }

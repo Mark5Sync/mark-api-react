@@ -35,13 +35,10 @@ const __type__Handler = (interfc) => {
 
 
 const domain_from_url = (url) => {
-    var result
-    var match
-    if (match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im)) {
+    let result
+    let match
+    if (match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)(:?\d+)?/im)) {
         result = match[1]
-        if (match = result.match(/^[^\.]+\.(.+\..+)$/)) {
-            result = match[1]
-        }
     }
     return result
 }
@@ -71,11 +68,10 @@ const loadDic = async (url, dev) => {
 
     let content = `
 
-${
-    dev
-        ?'import { useQuery, useQuerySync } from "../hooks/useQuery.ts"'
-        :'import { useQuery, useQuerySync } from "mark-api-react"'
-}
+${dev
+            ? 'import { useQuery, useQuerySync } from "../hooks/useQuery.ts"'
+            : 'import { useQuery, useQuerySync } from "mark-api-react"'
+        }
     
     ` + '\n'
 
@@ -116,11 +112,11 @@ export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputTyp
 try {
     // const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-    const url  = process.env.MARK_API_URL
+    const url = process.env.MARK_API_URL
     const file = process.env.MARK_API_FILE
-    const dev  = process.env.MARK_API_DEV
+    const dev = process.env.MARK_API_DEV
 
-    console.log({url, dev})
+    console.log({ url, dev })
 
     loadDic(url, dev).then(data => {
         if (!data)

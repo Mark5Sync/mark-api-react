@@ -33,9 +33,23 @@ const __type__Handler = (interfc) => {
     return interfc
 }
 
+
+const domain_from_url = (url) => {
+    var result
+    var match
+    if (match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im)) {
+        result = match[1]
+        if (match = result.match(/^[^\.]+\.(.+\..+)$/)) {
+            result = match[1]
+        }
+    }
+    return result
+}
+
 const loadDic = async (url, dev) => {
     const serverUrl = `${url}/__doc__`
-    const shortUrl = url.substring(url.search('/'))
+    const domain = domain_from_url(url)
+    const shortUrl = url.substring(url.search(domain))
     const serverDoc = await fetch(serverUrl).then(a => a.json())
 
 

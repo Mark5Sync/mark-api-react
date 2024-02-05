@@ -35,7 +35,9 @@ const __type__Handler = (interfc) => {
 
 const loadDic = async (url, dev) => {
     const serverUrl = `${url}/__doc__`
+    const shortUrl = url.substring(url.search('/'))
     const serverDoc = await fetch(serverUrl).then(a => a.json())
+
 
     if (!('data' in serverDoc)) {
         if ('error' in serverDoc)
@@ -77,10 +79,10 @@ ${
 
         return `
 export const use${Method}Query = (${inputVal}) => useQuery<${inputType},${outputType}>( 
-    '${url}/${methodName}', ${useInputVal ? 'input' : ''} 
+    '/${shortUrl}/${methodName}', ${useInputVal ? 'input' : ''} 
 )
 export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputType}>( 
-    '${url}/${methodName}'
+    '/${shortUrl}/${methodName}'
 )
             
 `

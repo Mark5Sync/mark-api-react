@@ -89,10 +89,10 @@ ${dev
 
         return `
 export const use${Method}Query = (${inputVal}) => useQuery<${inputType},${outputType}>( 
-    '/${shortUrl}/${methodName}', ${useInputVal ? 'input' : ''} 
+    '${shortUrl}/${methodName}', ${useInputVal ? 'input' : ''} 
 )
 export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputType}>( 
-    '/${shortUrl}/${methodName}'
+    '${shortUrl}/${methodName}'
 )
             
 `

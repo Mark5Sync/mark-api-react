@@ -38,7 +38,7 @@ const domain_from_url = (url) => {
     let result
     let match
     if (match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)(:?\d+)?/im)) {
-        result = match[1]
+        result = match[0]
     }
     return result
 }
@@ -46,7 +46,7 @@ const domain_from_url = (url) => {
 const loadDic = async (url, dev) => {
     const serverUrl = `${url}/__doc__`
     const domain = domain_from_url(url)
-    const shortUrl = url.substring(url.search(domain))
+    const shortUrl = url.replace(domain, '')
     const serverDoc = await fetch(serverUrl).then(a => a.json())
 
 

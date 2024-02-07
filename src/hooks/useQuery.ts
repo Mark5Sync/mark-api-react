@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 
-interface Error {
+export interface Error {
     message: string,
     code: string,
 }

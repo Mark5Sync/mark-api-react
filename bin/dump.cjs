@@ -43,7 +43,7 @@ const domain_from_url = (url) => {
     return result
 }
 
-const loadDic = async (url, dev) => {
+const loadDic = async (url, dev, useFullUrl) => {
     const serverUrl = `${url}/__doc__`
     const domain = domain_from_url(url)
     const shortUrl = url.replace(domain, '')
@@ -89,10 +89,10 @@ ${dev
 
         return `
 export const use${Method}Query = (${inputVal}) => useQuery<${inputType},${outputType}>( 
-    '${shortUrl}/${methodName}', ${useInputVal ? 'input' : ''} 
+    '${useFullUrl ? url :shortUrl}/${methodName}', ${useInputVal ? 'input' : ''} 
 )
 export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputType}>( 
-    '${shortUrl}/${methodName}'
+    '${useFullUrl ? url :shortUrl}/${methodName}'
 )
             
 `
@@ -115,10 +115,12 @@ try {
     const url = process.env.MARK_API_URL
     const file = process.env.MARK_API_FILE
     const dev = process.env.MARK_API_DEV
+    const useFullUrl = process.env.MARK_API_USE_FULL_URL
+
 
     console.log({ url, dev })
 
-    loadDic(url, dev).then(data => {
+    loadDic(url, dev, useFullUrl).then(data => {
         if (!data)
             return 'exit'
 

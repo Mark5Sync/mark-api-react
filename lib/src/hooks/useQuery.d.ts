@@ -1,9 +1,9 @@
-/// <reference types="react" />
+import { DependencyList } from "react";
 export interface Error {
     message: string;
     code: string;
 }
-declare const useQuery: <I, T>(url: string, input?: I) => [T, import("react").Dispatch<import("react").SetStateAction<T>>, {
+declare const useQuery: <I, T>(url: string, input?: I, deps?: DependencyList) => [T, import("react").Dispatch<import("react").SetStateAction<T>>, {
     loading: boolean;
     refetch: () => void;
     error?: Error;

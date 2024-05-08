@@ -1,1 +1,1 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,YAAY,EAAE,MAAM,sBAAsB,CAAC;AAE9D,OAAO,EACH,QAAQ,EACR,YAAY,GACf,CAAA","sourcesContent":["import { useQuery, useQuerySync } from \"./src/hooks/useQuery\";\n\nexport {\n    useQuery,\n    useQuerySync,\n}"]}
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,YAAY,EAAS,MAAM,sBAAsB,CAAC;AAErE,OAAO,EACH,QAAQ,EACR,YAAY,GAEf,CAAA"}

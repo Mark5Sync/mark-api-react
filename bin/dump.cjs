@@ -85,11 +85,12 @@ ${dev
         const outputType = 'output' in data.methods[methodName] ? RootTypes[Method + 'Output'] : 'undefined'
 
         const useInputVal = inputType != 'undefined'
-        const inputVal = useInputVal ? `input: ${inputType}` : ''
+        const deps = 'deps?: React.DependencyList'
+        const inputVal = useInputVal ? `input: ${inputType}, ${deps}` : deps
 
         return `
 export const use${Method}Query = (${inputVal}) => useQuery<${inputType},${outputType}>( 
-    '${useFullUrl ? url :shortUrl}/${methodName}', ${useInputVal ? 'input' : ''} 
+    '${useFullUrl ? url :shortUrl}/${methodName}', ${useInputVal ? 'input' : 'undefined'}, deps
 )
 export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputType}>( 
     '${useFullUrl ? url :shortUrl}/${methodName}'

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { DependencyList, useEffect, useState } from "react"
 
 
 export interface Error {
@@ -32,7 +32,7 @@ const api = async <I, T>(url: string, input?: I, extra?: (data: ApiResult<T>) =>
 
 
 
-const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>, { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
+const useQuery = <I, T>(url: string, input?: I, deps?: DependencyList): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>, { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
     const [data, setData] = useState<T | undefined>()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>()
@@ -44,10 +44,10 @@ const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<
         setError(undefined)
 
         api<I, T>(url, input, (result: ApiResult<T>) => {
-                setRedirect(result?.redirect)
-                setError(result?.error)
+            setRedirect(result?.redirect)
+            setError(result?.error)
 
-            })
+        })
             .then(result => {
                 setData(result)
             })
@@ -62,7 +62,7 @@ const useQuery = <I, T>(url: string, input?: I): [T | undefined, React.Dispatch<
             })
     }
 
-    useEffect(refetch, [])
+    useEffect(refetch, deps ? deps : [])
 
 
     return [data, setData, { loading, error, refetch, redirect }]

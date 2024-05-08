@@ -43,8 +43,8 @@ const domain_from_url = (url) => {
     return result
 }
 
-const loadDic = async (url, dev, useFullUrl) => {
-    const serverUrl = `${url}/__doc__`
+const loadDic = async (url, token, dev, useFullUrl) => {
+    const serverUrl = `${url}/__doc__?token=${token}`
     const domain = domain_from_url(url)
     const shortUrl = url.replace(domain, '')
     const serverDoc = await fetch(serverUrl).then(a => a.json())
@@ -116,11 +116,13 @@ try {
     const file = process.env.MARK_API_FILE
     const dev = process.env.MARK_API_DEV
     const useFullUrl = process.env.MARK_API_USE_FULL_URL
+    const TOKEN = process.env.MARK_API_TOKEN
+
 
 
     console.log({ url, dev })
 
-    loadDic(url, dev, useFullUrl).then(data => {
+    loadDic(url, TOKEN, dev, useFullUrl).then(data => {
         if (!data)
             return 'exit'
 

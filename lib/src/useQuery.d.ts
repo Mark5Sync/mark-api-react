@@ -1,4 +1,4 @@
-import { DependencyList } from "react";
+import { DependencyList, FormEvent } from "react";
 export interface Error {
     message: string;
     code: string;
@@ -14,4 +14,9 @@ declare const useQuerySync: <I, T>(url: string) => [(input?: I) => Promise<T>, {
     error?: Error;
     redirect?: string;
 }];
-export { useQuery, useQuerySync };
+declare const useFormAction: <I, T>(url: string, callback?: (data: T) => void) => [(event: FormEvent) => void, {
+    loading: boolean;
+    error?: Error;
+    redirect?: string;
+}];
+export { useQuery, useQuerySync, useFormAction, };

@@ -69,8 +69,8 @@ const loadDic = async (url, token, dev, useFullUrl) => {
     let content = `
 
 ${dev
-            ? 'import { useQuery, useQuerySync } from "../hooks/useQuery.ts"'
-            : 'import { useQuery, useQuerySync } from "mark-api-react"'
+            ? 'import { useQuery, useQuerySync, useFormAction } from "../hooks/useQuery.ts"'
+            : 'import { useQuery, useQuerySync, useFormAction } from "mark-api-react"'
         }
     
     ` + '\n'
@@ -95,11 +95,12 @@ export const use${Method}Query = (${inputVal}) => useQuery<${inputType},${output
 export const use${Method}QuerySync = () => useQuerySync<${inputType},${outputType}>( 
     '${useFullUrl ? url :shortUrl}/${methodName}'
 )
-            
-`
+export const use${Method}FormAction = (callback?: (data: ${outputType}) => void) => useFormAction<${inputType},${outputType}>( 
+    '${useFullUrl ? url :shortUrl}/${methodName}', callback
+)`
 
 
-    }).join('\n\n')
+    }).join('')
 
     return content
 }

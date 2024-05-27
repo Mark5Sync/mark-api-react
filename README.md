@@ -10,5 +10,5 @@ MARK_API_FILE: ./src/test/ApiQueryes.ts
 
 
 ```
-npx mark-api-dump
+npx dump-api
 ```

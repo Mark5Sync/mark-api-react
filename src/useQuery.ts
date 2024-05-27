@@ -1,4 +1,4 @@
-import { DependencyList, useEffect, useState } from "react"
+import { DependencyList, FormEvent, useEffect, useState } from "react"
 
 
 export interface Error {
@@ -99,7 +99,26 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>
 
 
 
+const useFormAction = <I, T>(url: string, callback?: (data: T | undefined) => void): [(event: FormEvent) => void, { loading: boolean, error?: Error, redirect?: string }] => {
+    const [request, requestProps] = useQuerySync(url)
+
+    const formAction = async (event: FormEvent) => {
+        event.preventDefault();
+
+        const data = Object.fromEntries(
+            (new FormData(event.target as HTMLFormElement) as any).entries()
+        ) as I;
+        
+        const result = await request(data) as T
+        callback && callback(result)
+    }
+
+    return [formAction, requestProps] 
+}
+
+
 export {
     useQuery,
-    useQuerySync
+    useQuerySync,
+    useFormAction,
 }

@@ -1,2 +1,2 @@
-import { useQuery, useQuerySync, Error } from "./src/hooks/useQuery";
-export { useQuery, useQuerySync, Error, };
+import { useQuery, useQuerySync, useFormAction, Error } from "./src/useQuery";
+export { useQuery, useQuerySync, useFormAction, Error, };

@@ -99,7 +99,7 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>
 
 
 
-const useFormAction = <I, T>(url: string, callback?: (data: T | undefined) => void): [(event: FormEvent) => void, { loading: boolean, error?: Error, redirect?: string }] => {
+const useFormAction = <I, T>(url: string, callback?: (data: T) => void): [(event: FormEvent) => void, { loading: boolean, error?: Error, redirect?: string }] => {
     const [request, requestProps] = useQuerySync(url)
 
     const formAction = async (event: FormEvent) => {

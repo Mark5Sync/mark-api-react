@@ -14,7 +14,7 @@ declare const useQuerySync: <I, T>(url: string) => [(input?: I) => Promise<T | u
     error?: Error;
     redirect?: string;
 }];
-declare const useFormAction: <I, T>(url: string, callback?: (data: T | undefined) => void) => [(event: FormEvent) => void, {
+declare const useFormAction: <I, T>(url: string, callback?: (data: T) => void) => [(event: FormEvent) => void, {
     loading: boolean;
     error?: Error;
     redirect?: string;

@@ -12,3 +12,6 @@ MARK_API_FILE: ./src/test/ApiQueryes.ts
 ```
 npx dump-api
 ```
+
+
+support v2 

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import BuilderV1 from '../src/types/v1/BuilderV1.cjs';
-import Builder from '../src/types/v2/Builder.cjs';
+const fs = require('fs')
+const path = require('path')
+const BuilderV1 = require('../src/types/v1/BuilderV1.cjs')
+const Builder = require('../src/types/v2/Builder.cjs')
 
-const fs = require('fs');
-const path = require('path');
 
 require('dotenv').config()
 
@@ -30,26 +30,24 @@ const loadDic = async (url, token, dev, useFullUrl) => {
     }).then(a => a.json())
 
 
-    if (!('schema' in response)) {
-        if ('error' in response)
-            console.error(response.error)
-
+    if ('error' in response) {
+        console.error(response.error)
         return false
     }
+
+
 
     const { version, schema } = response
 
     const useUrl = useFullUrl ? url : shortUrl
 
     switch (version) {
-        case 1:
-            return (new BuilderV1(response, useUrl, dev)).getCode()
-
         case 2:
             return (new Builder(schema, useUrl, dev)).getCode()
 
+        case 1:
         default:
-            console.error(`Неизвестная версия: ${version}`)
+            return (new BuilderV1(response, useUrl, dev)).getCode()
     }
 
 }

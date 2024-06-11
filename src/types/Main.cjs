@@ -1,6 +1,6 @@
 const JsonToTS = require('json-to-ts')
 
-export default class Main {
+class Main {
     schema
     url
     dev
@@ -51,3 +51,6 @@ export default class Main {
         return result
     }
 }
+
+
+module.exports = Main

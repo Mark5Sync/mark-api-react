@@ -5,6 +5,8 @@ const Main = require("../Main.cjs")
 class Builder extends Main {
 
     getCode() {
+        const mapping = process.env.MARK_API_MAPPING
+
 
         const types = {}
         this.schema.map(task => {
@@ -22,8 +24,8 @@ class Builder extends Main {
         let content = this.dev
             ? 'import { useQuery, useQuerySync, useFormAction } from "../hooks/useQuery.ts"'
             : 'import { useQuery, useQuerySync, useFormAction } from "mark-api-react"'
-            
-            
+
+
         content += '\n\n\n /* interfaces */\n\n'
         content += tsTypes.slice(1).map(interfc => this.__type__Handler(interfc)).map(interfc => `export ${interfc}`).join('\n\n') + '\n'
         content += '\n\n\n /* hooks */\n'
@@ -34,7 +36,7 @@ class Builder extends Main {
         content += this.schema.map(itm => {
 
             const inputType = itm.inputType ? RootTypes[itm.alias + 'Input'] : 'undefined'
-            const outputType = itm.outputType ?  RootTypes[itm.alias + 'Output'] : 'undefined'
+            const outputType = itm.outputType ? RootTypes[itm.alias + 'Output'] : 'undefined'
 
             const useInputVal = inputType != 'undefined'
             const deps = 'deps?: React.DependencyList'
@@ -54,7 +56,10 @@ export const use${itm.alias}FormAction = (callback?: (data: ${outputType}) => vo
 
         }).join('')
 
-        return content
+        return {
+            data: content,
+            mapp: mapping ? { hello: 'world', mapping } : undefined
+        }
     }
 
 }

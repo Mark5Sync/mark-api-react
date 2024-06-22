@@ -42,7 +42,7 @@ export const use${Method}FormAction = (callback?: (data: ${outputType}) => void)
 
         }).join('')
 
-        return content
+        return { data: content }
     }
 
 }

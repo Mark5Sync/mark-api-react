@@ -6,11 +6,12 @@ mark-api-react
 // .env
 MARK_API_URL: http://localhost/api
 MARK_API_FILE: ./src/test/ApiQueryes.ts
+MARK_API_MAPPING=server:workspace
 ```
 
 
 ```
-npx dump-api
+dump-api
 ```
 
 

@@ -67,7 +67,7 @@ try {
 
     console.log({ url, dev })
 
-    loadDic(url, TOKEN, dev, useFullUrl).then(data => {
+    loadDic(url, TOKEN, dev, useFullUrl).then(({data, mapp}) => {
         if (!data)
             return 'exit'
 
@@ -77,6 +77,11 @@ try {
         fs.writeFileSync(file, data, 'utf8');
 
         console.log('create file', file)
+
+
+        if (mapp)
+            fs.writeFileSync('./mapp.json', JSON.stringify(mapp))
+
     })
 
 } catch (error) {

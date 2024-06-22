@@ -5,7 +5,7 @@ const Main = require("../Main.cjs")
 class Builder extends Main {
 
     getCode() {
-        const mapping = process.env.MARK_API_MAPPING
+        const mapping = process.env.MARK_API_MAPPING ? process.env.MARK_API_MAPPING.split(':') : false
 
 
         const types = {}
@@ -32,7 +32,7 @@ class Builder extends Main {
 
 
 
-
+        const maps = {}
         content += this.schema.map(itm => {
 
             const inputType = itm.inputType ? RootTypes[itm.alias + 'Input'] : 'undefined'
@@ -41,6 +41,16 @@ class Builder extends Main {
             const useInputVal = inputType != 'undefined'
             const deps = 'deps?: React.DependencyList'
             const inputVal = useInputVal ? `input: ${inputType}, ${deps}` : deps
+
+
+
+            if (mapping) {
+                const file = itm.path.replace(mapping[0], mapping[1])
+                maps[`use${itm.alias}Query`] = file
+                maps[`use${itm.alias}QuerySync`] = file
+                maps[`use${itm.alias}FormAction`] = file
+            }
+
 
             return `
 export const use${itm.alias}Query = (${inputVal}) => useQuery<${inputType},${outputType}>( 
@@ -53,12 +63,11 @@ export const use${itm.alias}FormAction = (callback?: (data: ${outputType}) => vo
     '${this.url}/${itm.url}', callback
 )`
 
-
         }).join('')
 
         return {
             data: content,
-            mapp: mapping ? { hello: 'world', mapping } : undefined
+            mapp: mapping ? maps : undefined
         }
     }
 

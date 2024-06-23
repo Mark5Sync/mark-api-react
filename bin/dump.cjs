@@ -80,7 +80,7 @@ try {
 
 
         if (mapp)
-            fs.writeFileSync('./mapp.json', JSON.stringify(mapp))
+            fs.writeFileSync('./mapp.json', JSON.stringify(mapp, null, 2))
 
     })
 

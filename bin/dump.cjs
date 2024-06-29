@@ -62,12 +62,16 @@ try {
     const dev = process.env.MARK_API_DEV
     const useFullUrl = process.env.MARK_API_USE_FULL_URL
     const TOKEN = process.env.MARK_API_TOKEN
+    const MARK_API_DOC = process.env.MARK_API_DOC
+    const MARK_API_DOCS = process.env.MARK_API_DOCS
+
+
 
 
 
     console.log({ url, dev })
 
-    loadDic(url, TOKEN, dev, useFullUrl).then(({data, mapp}) => {
+    loadDic(url, TOKEN, dev, useFullUrl).then(({data, mapp, docs}) => {
         if (!data)
             return 'exit'
 
@@ -81,6 +85,10 @@ try {
 
         if (mapp)
             fs.writeFileSync('./mapp.json', JSON.stringify(mapp, null, 2))
+
+        if (MARK_API_DOC && docs)
+            fs.writeFileSync(MARK_API_DOC, docs.join('\n\n\n'))
+
 
     })
 

@@ -4,9 +4,38 @@ const Main = require("../Main.cjs")
 
 class Builder extends Main {
 
+    allTypes = {}
+
+    getMd(type){
+        if (type == 'undefined')
+            return ''
+
+            const isArray = type.endsWith('[]')
+            
+            if (isArray)
+                type = type.substr(0, type.length - 2)
+
+            if (type in this.allTypes)
+                type = this.allTypes[type]
+            
+            if (isArray)
+                type += '[]'
+                
+
+
+
+
+        return `
+input
+\`\`\`typescript
+${ctype}
+\`\`\`   
+`
+    }
+
     getCode() {
         const mapping = process.env.MARK_API_MAPPING ? process.env.MARK_API_MAPPING.split(':') : false
-
+        const docs = []
 
         const types = {}
         this.schema.map(task => {
@@ -19,6 +48,7 @@ class Builder extends Main {
 
         const tsTypes = this.getTypes(types)
         const RootTypes = this.matchRootTypes(tsTypes[0])
+        this.allTypes = this.matchAllTypes(RootTypes, tsTypes.slice(1))
 
 
         let content = this.dev
@@ -42,7 +72,16 @@ class Builder extends Main {
             const deps = 'deps?: React.DependencyList'
             const inputVal = useInputVal ? `input: ${inputType}, ${deps}` : deps
 
+            docs.push(`
+## ${itm.alias}
+${itm.doc}
 
+\`\`\`url
+${this.url}/${itm.url}
+\`\`\`    
+${this.getMd(inputType)}
+${this.getMd(outputType)}
+`)
 
             if (mapping) {
                 const file = itm.path.replace(mapping[0], mapping[1])
@@ -67,7 +106,8 @@ export const use${itm.alias}FormAction = (callback?: (data: ${outputType}) => vo
 
         return {
             data: content,
-            mapp: mapping ? maps : undefined
+            mapp: mapping ? maps : undefined,
+            docs,
         }
     }
 

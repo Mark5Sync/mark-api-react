@@ -50,6 +50,23 @@ class Main {
 
         return result
     }
+
+    matchAllTypes(typeNames, types)
+    {
+        const result = {};
+        const regex = /interface (.*?) (.*$)/gms;
+
+        for (const type of types) {
+            const match = regex.exec(type)
+            
+            if (!match)
+                continue
+            const [_, _interface, props] = match
+            result[_interface] = props   
+        }
+
+        return result
+    }
 }
 
 

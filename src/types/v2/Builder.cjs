@@ -6,7 +6,7 @@ class Builder extends Main {
 
     allTypes = {}
 
-    getMd(type){
+    getMd(type, title){
         if (type == 'undefined')
             return ''
 
@@ -26,9 +26,9 @@ class Builder extends Main {
 
 
         return `
-input
+${title}
 \`\`\`typescript
-${ctype}
+${type}
 \`\`\`   
 `
     }
@@ -64,6 +64,13 @@ ${ctype}
 
         const maps = {}
         content += this.schema.map(itm => {
+            let file = itm.path
+            if (mapping) {
+                file = file.replace(mapping[0], mapping[1])
+                maps[`use${itm.alias}Query`] = file
+                maps[`use${itm.alias}QuerySync`] = file
+                maps[`use${itm.alias}FormAction`] = file
+            }
 
             const inputType = itm.inputType ? RootTypes[itm.alias + 'Input'] : 'undefined'
             const outputType = itm.outputType ? RootTypes[itm.alias + 'Output'] : 'undefined'
@@ -71,25 +78,25 @@ ${ctype}
             const useInputVal = inputType != 'undefined'
             const deps = 'deps?: React.DependencyList'
             const inputVal = useInputVal ? `input: ${inputType}, ${deps}` : deps
+            const exceptions = itm.exceptions.reduce((acc, exception) => acc + `> [${exception.code}] ${exception.message}\n`, '')
 
             docs.push(`
-## ${itm.alias}
-${itm.doc}
-
-\`\`\`url
+## ${itm.alias} (${itm.shortAlias})
+${itm.doc ? `description\n${itm.doc}\n` : ''} 
+url
+\`\`\`copy
 ${this.url}/${itm.url}
-\`\`\`    
-${this.getMd(inputType)}
-${this.getMd(outputType)}
+\`\`\`  
+file
+\`\`\`file
+${file}
+\`\`\`  
+${this.getMd(inputType, 'input')}
+${this.getMd(outputType, 'output')}
+${exceptions ? `exceptions\n${exceptions}\n` : ''}
 `)
 
-            if (mapping) {
-                const file = itm.path.replace(mapping[0], mapping[1])
-                maps[`use${itm.alias}Query`] = file
-                maps[`use${itm.alias}QuerySync`] = file
-                maps[`use${itm.alias}FormAction`] = file
-            }
-
+            
 
             return `
 export const use${itm.alias}Query = (${inputVal}) => useQuery<${inputType},${outputType}>( 

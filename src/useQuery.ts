@@ -21,6 +21,7 @@ const api = async <I, T>(url: string, input?: I, extra?: (data: ApiResult<T>) =>
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
+        cache: 'no-store',
     })
         .then(a => a.json())
         .then(result => {
@@ -31,8 +32,20 @@ const api = async <I, T>(url: string, input?: I, extra?: (data: ApiResult<T>) =>
 }
 
 
+const query = async <I, T>(url: string, input?: I) => {
+    const result = await fetch(url, {
+        body: JSON.stringify(input),
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+    }).then(result => result.json()) as { data: T }
 
-const useQuery = <I, T>(url: string, input?: I, deps?: DependencyList): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>, { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
+    return result.data
+}
+
+
+const useQuery = <I, T>(url: string, input?: I, deps?: DependencyList): [[T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>], { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
     const [data, setData] = useState<T | undefined>()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>()
@@ -65,7 +78,7 @@ const useQuery = <I, T>(url: string, input?: I, deps?: DependencyList): [T | und
     useEffect(refetch, deps ? deps : [])
 
 
-    return [data, setData, { loading, error, refetch, redirect }]
+    return [[data, setData], { loading, error, refetch, redirect }]
 }
 
 
@@ -108,12 +121,12 @@ const useFormAction = <I, T>(url: string, callback?: (data: T) => void): [(event
         const data = Object.fromEntries(
             (new FormData(event.target as HTMLFormElement) as any).entries()
         ) as I;
-        
+
         const result = await request(data) as T
         callback && callback(result)
     }
 
-    return [formAction, requestProps] 
+    return [formAction, requestProps]
 }
 
 
@@ -121,4 +134,5 @@ export {
     useQuery,
     useQuerySync,
     useFormAction,
+    query,
 }

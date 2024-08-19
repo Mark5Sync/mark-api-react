@@ -5,9 +5,23 @@ class Main {
     url
     dev
 
-    constructor(schema, url, dev) {
+
+    useFullUrl
+    shortUrl
+    fullUrl
+
+
+    constructor(schema, uri, dev) {
         this.schema = schema
-        this.url = url
+        this.url = uri.useFullUrl ? uri.url : uri.shortUrl
+        
+        
+        this.useFullUrl = uri.useFullUrl
+        this.shortUrl = uri.shortUrl
+        this.fullUrl = uri.url
+
+
+
         this.dev = dev
     }
 

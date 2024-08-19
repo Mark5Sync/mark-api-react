@@ -39,15 +39,20 @@ const loadDic = async (url, token, dev, useFullUrl) => {
 
     const { version, schema } = response
 
-    const useUrl = useFullUrl ? url : shortUrl
+    const uri = {
+        url,
+        shortUrl,
+        useFullUrl,
+    }
+
 
     switch (version) {
         case 2:
-            return (new Builder(schema, useUrl, dev)).getCode()
+            return (new Builder(schema, uri, dev)).getCode()
 
         case 1:
         default:
-            return (new BuilderV1(response, useUrl, dev)).getCode()
+            return (new BuilderV1(response, uri, dev)).getCode()
     }
 
 }
@@ -71,7 +76,7 @@ try {
 
     console.log({ url, dev })
 
-    loadDic(url, TOKEN, dev, useFullUrl).then(({data, mapp, docs}) => {
+    loadDic(url, TOKEN, dev, useFullUrl).then(({ data, mapp, mappFile, docs }) => {
         if (!data)
             return 'exit'
 
@@ -83,8 +88,10 @@ try {
         console.log('create file', file)
 
 
-        if (mapp)
-            fs.writeFileSync('./mapp.json', JSON.stringify(mapp, null, 2))
+        if (mapp){
+            // console.info(`write mapp file ${mappFile}`)
+            fs.writeFileSync(mappFile, JSON.stringify(mapp, null, 2))
+        }
 
         if (MARK_API_DOC && docs)
             fs.writeFileSync(MARK_API_DOC, docs.join('\n\n\n'))

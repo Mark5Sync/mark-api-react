@@ -6,21 +6,21 @@ class Builder extends Main {
 
     allTypes = {}
 
-    getMd(type, title){
+    getMd(type, title) {
         if (type == 'undefined')
             return ''
 
-            const isArray = type.endsWith('[]')
-            
-            if (isArray)
-                type = type.substr(0, type.length - 2)
+        const isArray = type.endsWith('[]')
 
-            if (type in this.allTypes)
-                type = this.allTypes[type]
-            
-            if (isArray)
-                type += '[]'
-                
+        if (isArray)
+            type = type.substr(0, type.length - 2)
+
+        if (type in this.allTypes)
+            type = this.allTypes[type]
+
+        if (isArray)
+            type += '[]'
+
 
 
 
@@ -52,8 +52,8 @@ ${type}
 
 
         let content = this.dev
-            ? 'import { useQuery, useQuerySync, useFormAction } from "../hooks/useQuery.ts"'
-            : 'import { useQuery, useQuerySync, useFormAction } from "mark-api-react"'
+            ? 'import { useQuery, useQuerySync, useFormAction, query } from "../hooks/useQuery.ts"'
+            : 'import { useQuery, useQuerySync, useFormAction, query } from "mark-api-react"'
 
 
         content += '\n\n\n /* interfaces */\n\n'
@@ -67,8 +67,10 @@ ${type}
             let file = itm.path
             if (mapping) {
                 file = file.replace(mapping[0], mapping[1])
-                maps[`use${itm.alias}Query`] = file
-                maps[`use${itm.alias}QuerySync`] = file
+
+                maps[`get${itm.alias}`] = file
+                maps[`use${itm.alias}`] = file
+                maps[`use${itm.alias}Sync`] = file
                 maps[`use${itm.alias}FormAction`] = file
             }
 
@@ -96,13 +98,16 @@ ${this.getMd(outputType, 'output')}
 ${exceptions ? `exceptions\n${exceptions}\n` : ''}
 `)
 
-            
+
 
             return `
-export const use${itm.alias}Query = (${inputVal}) => useQuery<${inputType},${outputType}>( 
+export const get${itm.alias} = (${inputVal}) => query<${inputType},${outputType}>( 
+    '${this.fullUrl}/${itm.url}', ${useInputVal ? 'input' : 'undefined'}
+)
+export const use${itm.alias} = (${inputVal}) => useQuery<${inputType},${outputType}>( 
     '${this.url}/${itm.url}', ${useInputVal ? 'input' : 'undefined'}, deps
 )
-export const use${itm.alias}QuerySync = () => useQuerySync<${inputType},${outputType}>( 
+export const use${itm.alias}Sync = () => useQuerySync<${inputType},${outputType}>( 
     '${this.url}/${itm.url}'
 )
 export const use${itm.alias}FormAction = (callback?: (data: ${outputType}) => void) => useFormAction<${inputType},${outputType}>( 
@@ -114,6 +119,7 @@ export const use${itm.alias}FormAction = (callback?: (data: ${outputType}) => vo
         return {
             data: content,
             mapp: mapping ? maps : undefined,
+            mappFile: mapping[2] ?? 'mapp.json',
             docs,
         }
     }

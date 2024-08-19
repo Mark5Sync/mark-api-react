@@ -17,3 +17,10 @@ dump-api
 
 
 support v2 
+
+
+
+mapping
+```conf
+MARK_API_MAPPING=/var/www/html/routes:/Users/x/Documents/fluid-course-2/api/routes:../mapp.json
+```

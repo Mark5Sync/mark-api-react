@@ -3,7 +3,8 @@ export interface Error {
     message: string;
     code: string;
 }
-declare const useQuery: <I, T>(url: string, input?: I, deps?: DependencyList) => [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>, {
+declare const query: <I, T>(url: string, input?: I) => Promise<T>;
+declare const useQuery: <I, T>(url: string, input?: I, deps?: DependencyList) => [[T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>], {
     loading: boolean;
     refetch: () => void;
     error?: Error;
@@ -19,4 +20,4 @@ declare const useFormAction: <I, T>(url: string, callback?: (data: T) => void) =
     error?: Error;
     redirect?: string;
 }];
-export { useQuery, useQuerySync, useFormAction, };
+export { useQuery, useQuerySync, useFormAction, query, };

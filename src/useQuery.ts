@@ -20,10 +20,6 @@ interface QueryOptions<I> {
     middleware?: Middleware<I>,
 }
 
-interface QuerySyncOptions<I> {
-    deps?: DependencyList,
-    middleware?: Middleware<I>,
-}
 
 interface QueryFormActionOptions<I, T> {
     middleware?: Middleware<I>,
@@ -114,7 +110,7 @@ const useQuery = <I, T>(url: string, input?: I, options?: QueryOptions<I> ): [[T
 
 
 
-const useQuerySync = <I, T>(url: string, options?: QuerySyncOptions<I>): [(input?: I) => Promise<T | undefined | void>, { loading: boolean, error?: Error, redirect?: string }] => {
+const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined | void>, { loading: boolean, error?: Error, redirect?: string }] => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | undefined>()
     const [redirect, setRedirect] = useState<string | undefined>(undefined)
@@ -137,22 +133,7 @@ const useQuerySync = <I, T>(url: string, options?: QuerySyncOptions<I>): [(input
             return data
     }
 
-
-    const refetchMiddleware = async (input?: I) => {
-   
-        return !options.middleware 
-            ? await refetch(input) 
-            : await options.middleware(
-                input, 
-                async data => {
-                    return await refetch(data)
-                }
-            )
-        
-    }
-
-
-    return [refetchMiddleware, { loading, error, redirect }]
+    return [refetch, { loading, error, redirect }]
 }
 
 

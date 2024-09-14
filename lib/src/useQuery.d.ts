@@ -8,10 +8,6 @@ interface QueryOptions<I> {
     deps?: DependencyList;
     middleware?: Middleware<I>;
 }
-interface QuerySyncOptions<I> {
-    deps?: DependencyList;
-    middleware?: Middleware<I>;
-}
 interface QueryFormActionOptions<I, T> {
     middleware?: Middleware<I>;
     callback?: (result: T) => void;
@@ -23,7 +19,7 @@ declare const useQuery: <I, T>(url: string, input?: I, options?: QueryOptions<I>
     error?: Error;
     redirect?: string;
 }];
-declare const useQuerySync: <I, T>(url: string, options?: QuerySyncOptions<I>) => [(input?: I) => Promise<T | undefined | void>, {
+declare const useQuerySync: <I, T>(url: string) => [(input?: I) => Promise<T | undefined | void>, {
     loading: boolean;
     error?: Error;
     redirect?: string;

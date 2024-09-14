@@ -13,6 +13,23 @@ interface ApiResult<T> {
     redirect?: string,
 }
 
+type Middleware<T> =  (data: T, next: (props: any) => void) => void
+
+interface QueryOptions<I> {
+    deps?: DependencyList,
+    middleware?: Middleware<I>,
+}
+
+interface QuerySyncOptions<I> {
+    deps?: DependencyList,
+    middleware?: Middleware<I>,
+}
+
+interface QueryFormActionOptions<I, T> {
+    middleware?: Middleware<I>,
+    callback?: (result: T) => void,
+}
+
 
 const api = async <I, T>(url: string, input?: I, extra?: (data: ApiResult<T>) => void) => {
     return fetch(url, {
@@ -45,18 +62,18 @@ const query = async <I, T>(url: string, input?: I) => {
 }
 
 
-const useQuery = <I, T>(url: string, input?: I, deps?: DependencyList): [[T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>], { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
+const useQuery = <I, T>(url: string, input?: I, options?: QueryOptions<I> ): [[T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>], { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
     const [data, setData] = useState<T | undefined>()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>()
     const [redirect, setRedirect] = useState<string | undefined>(undefined)
 
 
-    const refetch = () => {
+    const refetch = (data: any) => {
         setLoading(true)
         setError(undefined)
 
-        api<I, T>(url, input, (result: ApiResult<T>) => {
+        api<I, T>(url, data, (result: ApiResult<T>) => {
             setRedirect(result?.redirect)
             setError(result?.error)
 
@@ -75,15 +92,29 @@ const useQuery = <I, T>(url: string, input?: I, deps?: DependencyList): [[T | un
             })
     }
 
-    useEffect(refetch, deps ? deps : [])
+
+    const refetchMiddleware = () => {
+
+        return !options.middleware
+            ?refetch(input)
+            :options.middleware(
+                input, 
+                data => {
+                    refetch(data)
+                }
+            )
+
+    }
+
+    useEffect(refetchMiddleware, options?.deps ? options.deps : [])
 
 
-    return [[data, setData], { loading, error, refetch, redirect }]
+    return [[data, setData], { loading, error, refetch: refetchMiddleware, redirect }]
 }
 
 
 
-const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>, { loading: boolean, error?: Error, redirect?: string }] => {
+const useQuerySync = <I, T>(url: string, options?: QuerySyncOptions<I>): [(input?: I) => Promise<T | undefined | void>, { loading: boolean, error?: Error, redirect?: string }] => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | undefined>()
     const [redirect, setRedirect] = useState<string | undefined>(undefined)
@@ -107,13 +138,35 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined>
     }
 
 
-    return [refetch, { loading, error, redirect }]
+    const refetchMiddleware = async (input?: I) => {
+   
+        return !options.middleware 
+            ? await refetch(input) 
+            : await options.middleware(
+                input, 
+                async data => {
+                    return await refetch(data)
+                }
+            )
+        
+    }
+
+
+    return [refetchMiddleware, { loading, error, redirect }]
 }
 
 
-
-const useFormAction = <I, T>(url: string, callback?: (data: T) => void): [(event: FormEvent) => void, { loading: boolean, error?: Error, redirect?: string }] => {
+const useFormAction = <I, T>(url: string, options: QueryFormActionOptions<I, T>): [(event: FormEvent) => void, { loading: boolean, error?: Error, redirect?: string }] => {
     const [request, requestProps] = useQuerySync(url)
+
+    
+    const refetch = async (data: any) => {
+        const result = await request(data) as T
+
+        if (options.callback)
+            options.callback(result)
+    }
+
 
     const formAction = async (event: FormEvent) => {
         event.preventDefault();
@@ -122,8 +175,9 @@ const useFormAction = <I, T>(url: string, callback?: (data: T) => void): [(event
             (new FormData(event.target as HTMLFormElement) as any).entries()
         ) as I;
 
-        const result = await request(data) as T
-        callback && callback(result)
+        options.middleware
+            ?options.middleware(data, data => refetch(data))
+            :refetch(data)
     }
 
     return [formAction, requestProps]

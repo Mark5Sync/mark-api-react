@@ -33,6 +33,9 @@ ${type}
 `
     }
 
+
+
+
     getCode() {
         const mapping = process.env.MARK_API_MAPPING ? process.env.MARK_API_MAPPING.split(':') : false
         const docs = []
@@ -41,6 +44,7 @@ ${type}
         this.schema.map(task => {
             if (task.inputType)
                 types[`${task.alias}Input`] = task.inputType
+
 
             if (task.outputType)
                 types[`${task.alias}Output`] = task.outputType
@@ -52,12 +56,13 @@ ${type}
 
 
         let content = this.dev
-            ? 'import { useQuery, useQuerySync, useFormAction, query } from "../hooks/useQuery.ts"'
-            : 'import { useQuery, useQuerySync, useFormAction, query } from "mark-api-react"'
+            ? 'import { useQuery, useQuerySync, useFormAction, query, QueryOptions, QueryFormActionOptions } from "../hooks/useQuery.ts"'
+            : 'import { useQuery, useQuerySync, useFormAction, query, QueryOptions, QueryFormActionOptions } from "mark-api-react"'
 
 
         content += '\n\n\n /* interfaces */\n\n'
-        content += tsTypes.slice(1).map(interfc => this.__type__Handler(interfc)).map(interfc => `export ${interfc}`).join('\n\n') + '\n'
+        this.undefinedTypes = {}
+        content += tsTypes.slice(1).map(interfc => this.__type__Handler(interfc)).map(interfc => this.__type__ReplaceUndefined(interfc)).join('\n\n') + '\n'
         content += '\n\n\n /* hooks */\n'
 
 
@@ -78,8 +83,7 @@ ${type}
             const outputType = itm.outputType ? RootTypes[itm.alias + 'Output'] : 'undefined'
 
             const useInputVal = inputType != 'undefined'
-            const deps = 'deps?: React.DependencyList'
-            const inputVal = useInputVal ? `input: ${inputType}, ${deps}` : deps
+            const inputVal = useInputVal ? `input: ${inputType}` : ''
             const exceptions = itm.exceptions.reduce((acc, exception) => acc + `> [${exception.code}] ${exception.message}\n`, '')
 
             docs.push(`
@@ -104,14 +108,14 @@ ${exceptions ? `exceptions\n${exceptions}\n` : ''}
 export const get${itm.alias} = (${inputVal}) => query<${inputType},${outputType}>( 
     '${this.fullUrl}/${itm.url}', ${useInputVal ? 'input' : 'undefined'}
 )
-export const use${itm.alias} = (${inputVal}) => useQuery<${inputType},${outputType}>( 
-    '${this.url}/${itm.url}', ${useInputVal ? 'input' : 'undefined'}, deps
+export const use${itm.alias} = (${useInputVal ? `${inputVal},` : ''} options?: QueryOptions<${inputType}>) => useQuery<${inputType},${outputType}>( 
+    '${this.url}/${itm.url}', ${useInputVal ? 'input' : 'undefined'}, options
 )
 export const use${itm.alias}Sync = () => useQuerySync<${inputType},${outputType}>( 
     '${this.url}/${itm.url}'
 )
-export const use${itm.alias}FormAction = (callback?: (data: ${outputType}) => void) => useFormAction<${inputType},${outputType}>( 
-    '${this.url}/${itm.url}', callback
+export const use${itm.alias}FormAction = (options?: QueryFormActionOptions<${inputType},${outputType}>) => useFormAction<${inputType},${outputType}>( 
+    '${this.url}/${itm.url}', options
 )`
 
         }).join('')

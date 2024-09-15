@@ -22,12 +22,14 @@ const loadDic = async (url, token, dev, useFullUrl) => {
     const serverUrl = `${url}/__doc__`
     const domain = domain_from_url(url)
     const shortUrl = url.replace(domain, '')
-    const response = await fetch(serverUrl, {
+    const responseString = await fetch(serverUrl, {
         method: 'POST',
         body: JSON.stringify({
             token,
         })
-    }).then(a => a.json())
+    }).then(result => result.text())
+
+    const response = JSON.parse(responseString, (key, value) => Array.isArray(value) ? value.map(itm => itm === null ? undefined : itm) : value)
 
 
     if ('error' in response) {

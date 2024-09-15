@@ -3,12 +3,12 @@ export interface Error {
     message: string;
     code: string;
 }
-type Middleware<T> = (data: T, next: (props: any) => void) => void;
-interface QueryOptions<I> {
+type Middleware<T> = (data: T, next: (data: any) => void) => void;
+export interface QueryOptions<I> {
     deps?: DependencyList;
     middleware?: Middleware<I>;
 }
-interface QueryFormActionOptions<I, T> {
+export interface QueryFormActionOptions<I, T> {
     middleware?: Middleware<I>;
     callback?: (result: T) => void;
 }
@@ -24,7 +24,7 @@ declare const useQuerySync: <I, T>(url: string) => [(input?: I) => Promise<T | u
     error?: Error;
     redirect?: string;
 }];
-declare const useFormAction: <I, T>(url: string, options: QueryFormActionOptions<I, T>) => [(event: FormEvent) => void, {
+declare const useFormAction: <I, T>(url: string, options?: QueryFormActionOptions<I, T>) => [(event: FormEvent) => void, {
     loading: boolean;
     error?: Error;
     redirect?: string;

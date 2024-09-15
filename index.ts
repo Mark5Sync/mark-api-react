@@ -1,4 +1,12 @@
-import { query, useQuery, useQuerySync, useFormAction, Error } from "./src/useQuery.js";
+import { 
+    query, 
+    useQuery, 
+    useQuerySync, 
+    useFormAction, 
+    Error, 
+    QueryOptions, 
+    QueryFormActionOptions,
+} from "./src/useQuery.js";
 
 export {
     query,
@@ -6,4 +14,7 @@ export {
     useQuerySync,
     useFormAction,
     Error,
+
+    QueryOptions,
+    QueryFormActionOptions,
 }

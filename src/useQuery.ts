@@ -144,7 +144,7 @@ const useFormAction = <I, T>(url: string, options?: QueryFormActionOptions<I, T>
     const refetch = async (data: any) => {
         const result = await request(data) as T
 
-        if (options.callback)
+        if (options?.callback)
             options.callback(result)
     }
 
@@ -156,7 +156,7 @@ const useFormAction = <I, T>(url: string, options?: QueryFormActionOptions<I, T>
             (new FormData(event.target as HTMLFormElement) as any).entries()
         ) as I;
 
-        options.middleware
+        options?.middleware
             ?options.middleware(data, data => refetch(data))
             :refetch(data)
     }

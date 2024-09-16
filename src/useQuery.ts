@@ -15,13 +15,13 @@ interface ApiResult<T> {
 
 type Middleware<T> =  (data: T, next: (data: any) => void) => void
 
-export interface QueryOptions<I> {
+interface QueryOptions<I> {
     deps?: DependencyList,
     middleware?: Middleware<I>,
 }
 
 
-export interface QueryFormActionOptions<I, T> {
+interface QueryFormActionOptions<I, T> {
     middleware?: Middleware<I>,
     callback?: (result: T) => void,
 }
@@ -91,7 +91,7 @@ const useQuery = <I, T>(url: string, input?: I, options?: QueryOptions<I> ): [[T
 
     const refetchMiddleware = () => {
 
-        return !options.middleware
+        return !options?.middleware
             ?refetch(input)
             :options.middleware(
                 input, 
@@ -170,4 +170,8 @@ export {
     useQuerySync,
     useFormAction,
     query,
+
+
+    QueryOptions,
+    QueryFormActionOptions,
 }

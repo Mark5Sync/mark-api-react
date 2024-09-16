@@ -4,11 +4,11 @@ export interface Error {
     code: string;
 }
 type Middleware<T> = (data: T, next: (data: any) => void) => void;
-export interface QueryOptions<I> {
+interface QueryOptions<I> {
     deps?: DependencyList;
     middleware?: Middleware<I>;
 }
-export interface QueryFormActionOptions<I, T> {
+interface QueryFormActionOptions<I, T> {
     middleware?: Middleware<I>;
     callback?: (result: T) => void;
 }
@@ -29,4 +29,4 @@ declare const useFormAction: <I, T>(url: string, options?: QueryFormActionOption
     error?: Error;
     redirect?: string;
 }];
-export { useQuery, useQuerySync, useFormAction, query, };
+export { useQuery, useQuerySync, useFormAction, query, QueryOptions, QueryFormActionOptions, };

@@ -6,7 +6,7 @@ import {
     Error, 
     QueryOptions, 
     QueryFormActionOptions,
-} from "./src/useQuery.js";
+} from "./src/useQuery";
 
 export {
     query,

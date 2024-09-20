@@ -90,16 +90,9 @@ const useQuery = <I, T>(url: string, input?: I, options?: QueryOptions<I> ): [[T
 
 
     const refetchMiddleware = () => {
-
-        return !options?.middleware
+        !options?.middleware
             ?refetch(input)
-            :options.middleware(
-                input, 
-                data => {
-                    refetch(data)
-                }
-            )
-
+            :options.middleware(input, data => refetch(data))
     }
 
     useEffect(refetchMiddleware, options?.deps ? options.deps : [])

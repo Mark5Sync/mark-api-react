@@ -3,17 +3,17 @@ export interface Error {
     message: string;
     code: string;
 }
-type Middleware<T> = (data: T, next: (data: any) => void) => void;
-interface QueryOptions<I> {
+type Middleware<I, O> = (data: I, request: (data: any, response?: (data: O) => void) => void, apply: (data: O) => void) => void;
+interface QueryOptions<I, O> {
     deps?: DependencyList;
-    middleware?: Middleware<I>;
+    middleware?: Middleware<I, O>;
 }
-interface QueryFormActionOptions<I, T> {
-    middleware?: Middleware<I>;
-    callback?: (result: T) => void;
+interface QueryFormActionOptions<I, O> {
+    middleware?: Middleware<I, O>;
+    callback?: (result: O) => void;
 }
 declare const query: <I, T>(url: string, input?: I) => Promise<T>;
-declare const useQuery: <I, T>(url: string, input?: I, options?: QueryOptions<I>) => [[T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>], {
+declare const useQuery: <I, O>(url: string, input?: I, options?: QueryOptions<I, O>) => [[O | undefined, React.Dispatch<React.SetStateAction<O | undefined>>], {
     loading: boolean;
     refetch: () => void;
     error?: Error;
@@ -24,7 +24,7 @@ declare const useQuerySync: <I, T>(url: string) => [(input?: I) => Promise<T | u
     error?: Error;
     redirect?: string;
 }];
-declare const useFormAction: <I, T>(url: string, options?: QueryFormActionOptions<I, T>) => [(event: FormEvent) => void, {
+declare const useFormAction: <I, O>(url: string, options?: QueryFormActionOptions<I, O>) => [(event: FormEvent) => void, {
     loading: boolean;
     error?: Error;
     redirect?: string;

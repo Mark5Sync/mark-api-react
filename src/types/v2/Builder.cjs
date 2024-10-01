@@ -108,7 +108,7 @@ ${exceptions ? `exceptions\n${exceptions}\n` : ''}
 export const get${itm.alias} = (${inputVal}) => query<${inputType},${outputType}>( 
     '${this.fullUrl}/${itm.url}', ${useInputVal ? 'input' : 'undefined'}
 )
-export const use${itm.alias} = (${useInputVal ? `${inputVal},` : ''} options?: QueryOptions<${inputType}>) => useQuery<${inputType},${outputType}>( 
+export const use${itm.alias} = (${useInputVal ? `${inputVal},` : ''} options?: QueryOptions<${inputType},${outputType}>) => useQuery<${inputType},${outputType}>( 
     '${this.url}/${itm.url}', ${useInputVal ? 'input' : 'undefined'}, options
 )
 export const use${itm.alias}Sync = () => useQuerySync<${inputType},${outputType}>( 

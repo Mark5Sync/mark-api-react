@@ -13,17 +13,17 @@ interface ApiResult<T> {
     redirect?: string,
 }
 
-type Middleware<T> =  (data: T, next: (data: any) => void) => void
+type Middleware<I, O> = (data: I, request: (data: any, response?: (data: O) => void) => void, apply: (data: O) => void) => void
 
-interface QueryOptions<I> {
+interface QueryOptions<I, O> {
     deps?: DependencyList,
-    middleware?: Middleware<I>,
+    middleware?: Middleware<I, O>,
 }
 
 
-interface QueryFormActionOptions<I, T> {
-    middleware?: Middleware<I>,
-    callback?: (result: T) => void,
+interface QueryFormActionOptions<I, O> {
+    middleware?: Middleware<I, O>,
+    callback?: (result: O) => void,
 }
 
 
@@ -58,24 +58,23 @@ const query = async <I, T>(url: string, input?: I) => {
 }
 
 
-const useQuery = <I, T>(url: string, input?: I, options?: QueryOptions<I> ): [[T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>], { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
-    const [data, setData] = useState<T | undefined>()
+const useQuery = <I, O>(url: string, input?: I, options?: QueryOptions<I, O>): [[O | undefined, React.Dispatch<React.SetStateAction<O | undefined>>], { loading: boolean, refetch: () => void, error?: Error, redirect?: string }] => {
+    const [data, setData] = useState<O | undefined>()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<Error | undefined>()
     const [redirect, setRedirect] = useState<string | undefined>(undefined)
 
 
-    const refetch = (data: any) => {
+    const refetch = (data: any, apply: (data: O) => void) => {
         setLoading(true)
         setError(undefined)
 
-        api<I, T>(url, data, (result: ApiResult<T>) => {
+        api<I, O>(url, data, (result: ApiResult<O>) => {
             setRedirect(result?.redirect)
             setError(result?.error)
-
         })
-            .then(result => {
-                setData(result)
+            .then((result) => {
+                apply(result)
             })
             .catch(e => {
                 setError({
@@ -90,13 +89,15 @@ const useQuery = <I, T>(url: string, input?: I, options?: QueryOptions<I> ): [[T
 
 
     const refetchMiddleware = () => {
-        !options?.middleware
-            ?refetch(input)
-            :options.middleware(input, data => refetch(data))
+        if (!options?.middleware) {
+            refetch(input, setData)
+            return
+        }
+
+        options.middleware(input, (data, response) => refetch(data, response ? response : setData), setData)
     }
 
     useEffect(refetchMiddleware, options?.deps ? options.deps : [])
-
 
     return [[data, setData], { loading, error, refetch: refetchMiddleware, redirect }]
 }
@@ -130,12 +131,12 @@ const useQuerySync = <I, T>(url: string): [(input?: I) => Promise<T | undefined 
 }
 
 
-const useFormAction = <I, T>(url: string, options?: QueryFormActionOptions<I, T>): [(event: FormEvent) => void, { loading: boolean, error?: Error, redirect?: string }] => {
+const useFormAction = <I, O>(url: string, options?: QueryFormActionOptions<I, O>): [(event: FormEvent) => void, { loading: boolean, error?: Error, redirect?: string }] => {
     const [request, requestProps] = useQuerySync(url)
 
-    
+
     const refetch = async (data: any) => {
-        const result = await request(data) as T
+        const result = await request(data) as O
 
         if (options?.callback)
             options.callback(result)
@@ -150,8 +151,8 @@ const useFormAction = <I, T>(url: string, options?: QueryFormActionOptions<I, T>
         ) as I;
 
         options?.middleware
-            ?options.middleware(data, data => refetch(data))
-            :refetch(data)
+            ? options.middleware(data, data => refetch(data), (data: O) => { options.callback && options.callback(data) })
+            : refetch(data)
     }
 
     return [formAction, requestProps]

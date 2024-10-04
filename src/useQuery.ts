@@ -13,7 +13,7 @@ interface ApiResult<T> {
     redirect?: string,
 }
 
-type Middleware<I, O> = (data: I, request: (data: any, onResult?: (data: O) => void) => void, response?: (data: O) => void) => void
+type Middleware<I, O> = (data: I, request: (data: any, onResult?: (data: O) => void) => void, response: (data: O) => void) => void
 
 interface QueryOptions<I, O> {
     deps?: DependencyList,

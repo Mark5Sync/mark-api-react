@@ -13,7 +13,7 @@ interface ApiResult<T> {
     redirect?: string,
 }
 
-type Middleware<I, O> = (data: I, request: (data: any, response?: (data: O) => void) => void, apply: (data: O) => void) => void
+type Middleware<I, O> = (data: I, request: (data: any, onResult?: (data: O) => void) => void, response?: (data: O) => void) => void
 
 interface QueryOptions<I, O> {
     deps?: DependencyList,
@@ -94,7 +94,7 @@ const useQuery = <I, O>(url: string, input?: I, options?: QueryOptions<I, O>): [
             return
         }
 
-        options.middleware(input, (data, response) => refetch(data, response ? response : setData), setData)
+        options.middleware(input, (data, onResult) => refetch(data, onResult ? onResult : setData), setData)
     }
 
     useEffect(refetchMiddleware, options?.deps ? options.deps : [])

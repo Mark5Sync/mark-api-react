@@ -3,7 +3,7 @@ export interface Error {
     message: string;
     code: string;
 }
-type Middleware<I, O> = (data: I, request: (data: any, response?: (data: O) => void) => void, apply: (data: O) => void) => void;
+type Middleware<I, O> = (data: I, request: (data: any, onResult?: (data: O) => void) => void, response?: (data: O) => void) => void;
 interface QueryOptions<I, O> {
     deps?: DependencyList;
     middleware?: Middleware<I, O>;
